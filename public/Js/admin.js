@@ -8,9 +8,8 @@ document.getElementById('añadir').addEventListener('click', function () {
 
 fetch(endpoint)
   .then(respuesta => respuesta.json())
-  .then(datos => mostrarProductos(datos))
 
-// const mostrarProductos = (datos) => {
+  .then(datos => mostrarProductos(datos))
 //   let productos = ''
 //   const contenedor = document.querySelector('#contenedor')
 //   datos.forEach(datos => {
@@ -74,16 +73,7 @@ fetch(endpoint)
       mostrarMensaje('Error al cargar productos')
     }
   }
-  
 
-  // // Añadir event listeners a los botones "Editar"
-  // const editButtons = document.querySelectorAll('.edit');
-  // editButtons.forEach(button => {
-  //   button.addEventListener('click', function () {
-  //     const formulario = document.getElementById('editar');
-  //     formulario.classList.toggle('newE');
-  //   });
-  // });
 const añadir = () => {
 document.querySelector("#nuevoProd").style.display='block'
 const formulario = document.forms['formCrear']
@@ -183,10 +173,11 @@ const editar = (id) => {
     event.preventDefault();
     //creo objeto con datos nuevos
     const nuevosDatos = {
-      id: formEditar.idEditar.value,
       titulo: formEditar.titulo.value,
+      imagen: 'imagenes/' + formEditar.titulo.value + '.jpg',
       descripcion: formEditar.desc.value,
-      precio: formEditar.precio.value
+      precio: formEditar.precio.value,
+      id: formEditar.idEditar.value,
     }
     //validacion de campos vacios
     if (!nuevosDatos.titulo || !nuevosDatos.descripcion|| !nuevosDatos.precio) {
@@ -201,7 +192,7 @@ const editar = (id) => {
 
     const enviarNuevosDatos = async() => {
       try{
-        const enviarDatos = await fetch(endpoint + '/' + nuevosDatos.id, {
+        const enviarDatos = await fetch(endpoint, {
           method: 'put',
           headers: {
             'content-type': 'application/json'

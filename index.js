@@ -1,10 +1,11 @@
 //modulos
 const express = require('express');
+const env = require('dotenv/config')
 const db = require('./db/conexion') // requiere la funcion conexion, no es el archivo js
 const fs = require('fs') //Permite trabajar con archivos (file system) incluida con node, no se instala
 const cors = require('cors')
 const app = express();
-const port = 2006;
+const port = process.env.MYSQL_ADDON_PORT || 2006;
 
 //Middleware
 app.use(express.json())
@@ -50,30 +51,23 @@ app.post('/productos', (req, res) => {
     })
 })
 
-
-app.put('/productos/:id', (req, res) => {
+app.put('/productos', (req, res) => {
     // res.send('Actualizar producto por id')
-     console.log(req.body)
-     console.log(req.params.id)
-     const id= req.params.id;
-    const nuevosDatos= req.body;
-   
-
-    const datos = leerDatos()
-    const prodEncontrado=datos.productos.find((p)=>p.id ==req.params.id)
-    //console.log(prodEncontrado)
-    if (!prodEncontrado) {
-        return res.status(404).json('No se encontró el producto')
-    }
-    datos.productos = datos.productos.map(p => p.id == req.params.id ? { ...p, ...nuevosDatos } : p)
-    escribirDatos(datos)
-    res.json({mensaje:'Producto actualizado correctamente'})
+    const valores = Object.values(req.body)
+    console.log(valores)
+    const sql = "UPDATE productos SET  titulo=?, imagen=?, descripcion=?, precio=? WHERE id=?"
+    db.query(sql, valores, (err, result) => {
+        if(err){
+            console.error('Error al modificar el producto')
+            return;
+        }
+        res.json({mensaje:'Producto actualizado correctamente', data: result})
+    })
 })
-
 app.delete('/productos/:id', (req, res) => {
     // res.send('Eliminando Producto')
     const id=req.params.id;
-    const sql = "DELETE FROM ptoductos WHERE id=?"
+    const sql = "DELETE FROM productos WHERE id=?"
     db.query(sql, [id], (err, result) => {
         if(err){
             console.error("Error al eliminar")
