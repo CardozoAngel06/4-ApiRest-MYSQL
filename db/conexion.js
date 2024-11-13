@@ -3,7 +3,7 @@ const conexion = mysql.createConnection({
     host: process.env.MYSQL_ADDON_HOST || "localhost",
     user: process.env.MYSQL_ADDON_USER || "root",
     password: process.env.MYSQL_ADDON_PASSWORD || "",
-    database: MYSQL_ADDON_DB || "tienda",
+    database: process.env.MYSQL_ADDON_DB || "tienda",
     connectionLimit: 5
 })
 conexion.connect((err) =>{
